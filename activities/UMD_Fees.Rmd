@@ -7,21 +7,31 @@ Follow along with the demo to learn how to calculate percentage change using R a
 
 ### Task 1: Load the tidyverse
 
+```{r}
+library(tidyverse)
+
+```
 
 
 ### Task 2: Load the UMD Fees dataset from https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/umd_fees.csv
 
+```{r}
+umd_fees <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/umd_fees.csv")
+```
 
 
 ### Task 3: Calculate the percentage change in each category between Fall 2024 and Fall 2021 using `mutate()`
 
+```{r}
+umd_fees_pct <- umd_fees |> mutate(pct_change = (`Fall 2024`-`Fall 2021`)/`Fall 2021` * 100)
+```
 
 
 ### Task 4: Describe our results
 
 Write a few sentences about what you found in the data. What's the story here?
 
-
+After calculating percentage change data, I first noticed the largest increases across the data sheet, most notably a near 40% increase Shuttle Bus rates from Fall 2021 to Fall 2024, followed by an incredibly high 150% change in Student Sustainabibility rates. I believe one of the main takeaways is that exact numbers can fluctuate in regards to percentage data — smaller rising numbers (such as 0 to 15 to 30) can have just as much as an impact in percentage as larger rising numbers (200 to 250 to 300). In this data sheet specifically, the majority of the data was rising between all four semesters, with category totals noting an 18% percent change increase, effectively showing greater student fees to be paid on a year-by-year basis.
 
 
 
