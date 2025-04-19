@@ -1,0 +1,132 @@
+---
+title: "Diversity Index for Maryland Cities"
+author: "BEN GEFFNER"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Overview
+
+In this exercise, we will calculate the **USA TODAY Diversity Index** for Maryland cities with a population of at least 10,000 using 2020 Census race and ethnicity data. The Diversity Index reflects the probability that two randomly selected individuals from a city are of different races or ethnicities.
+
+A score of 0 indicates no diversity (everyone is the same race/ethnicity), while a score closer to 100 indicates higher diversity. The **most diverse city** has the highest index, reflecting a balanced mix of several racial and ethnic groups. The **least diverse** city likely has one overwhelmingly dominant racial/ethnic group.
+
+## Task 1: Load and Describe the Data (3 points)
+
+Run the following code to load the data, then examine it and describe what it contains. Based on the raw numbers alone, which cities stand out as diverse to you?
+
+Based on just raw numbers, certain individual cities that stand out as diverse include Beltsville, East Riverdale, Wheaton and Adelphi — as just off first glance, each of those city's population totals for most race columns nearly match — avoiding one large majority group while representing a sense of spread and, in turn, potential diversity. Other larger cities, such as Baltimore City, could be in contention with overwhelmingly large numbers under the "Two Plus Races" column (14,123, in specific) and a wide spread of diversity — however, the diversity numbers aren't as balanced and small as some of the others listed.
+
+```{r load-data}
+md_cities <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/usat_diversity_index.csv")
+
+# Preview structure
+View(md_cities)
+```
+
+## Task 2: Calculate Race Percentages
+
+```{r race-percentages}
+md_cities <- md_cities |>
+  mutate(
+    White_pct = White / TotalPop,
+    Black_pct = Black / TotalPop,
+    Native_pct = Native / TotalPop,
+    Asian_pct = Asian / TotalPop,
+    NHPI_pct = NHPI / TotalPop
+  )
+```
+
+## Task 3: Square the Race Percentages
+
+We need to square the race percentages in order to calculate the probability that any two people chosen at random from a given census area are of different races or are Hispanic or not.
+
+```{r square-race}
+md_cities <- md_cities |>
+  mutate(
+    White_pct_sq = White_pct^2,
+    Black_pct_sq = Black_pct^2,
+    Native_pct_sq = Native_pct^2,
+    Asian_pct_sq = Asian_pct^2,
+    NHPI_pct_sq = NHPI_pct^2
+  )
+```
+
+
+## Task 4: Calculate Race Probabilities (3 points)
+
+The race probability is the sum the squared probabilities for each of the races. It represents the probability that two people randomly chosen from the same city will be of the same race. Which city has the highest race probability, and why do you think that is?
+
+Summerfield (followed by Lake Shore and Hillcrest Heights, respectively) represents the city with the highest race probability — I think this is, due in part, to a increasingly large spread and discrepancy between each individual race/respective group shown. Summerfied in specific holds an uncontested majority of 11,565 individuals represented as "Black," by far the largest single-group number within the city and tens of thousands separation between White (562), Asian (44) and other groups — thus correlating and supporting the claim that with the highest race probability, the chances that two people randomly chosen from the same city will be of the same race is, in turn, much higher and elevated than other cities.
+
+```{r race-prob}
+md_cities <- md_cities |>
+  mutate(
+    Race_Prob = White_pct_sq + Black_pct_sq + Native_pct_sq + Asian_pct_sq + NHPI_pct_sq
+  ) |> 
+  arrange(desc(Race_Prob))
+
+View(md_cities)
+```
+
+
+## Task 5: Calculate Ethnicity Percentages and Their Squares (3 points)
+
+Hispanic origin is not a race but an ethnicity or nationality – and a separate Census question. The probability someone is Hispanic or not Hispanic must be calculated separately from race, and Hisp_Prob is the probability that two randomly selected people will be Hispanic or not. That's an important distinction, because unlike race probability, this measures the likelihood of a binary question: that both random people will be Hispanic. What do you notice about the cities with the *lowest* Hisp_Prob scores?
+
+The city with the lowest individual Hisp_Prob scores is Chillum, followed by East Riverdale and Wheaton. When studying these cities and framing comparisons between them, I noticed that White, Black and Asian populations are increasingly high in cities that make up the lowest scores. Though the Hispanic group generally remained high (over 16,000 in two of the lowest three Hisp_Prob score cities) — with a lack of spread and population disparity between each individual group (as seen in earlier race probability rates), the chance that two randomly selected people will be Hispanic is drastically lowered. Furthermore, a large grouping of cities with the lowest scores can be seen geographically located in or around the DMV, with Chillum and East Riverdale, among others, centrally grouped within Prince George's County specifically.
+
+```{r ethnicity}
+md_cities <- md_cities |>
+  mutate(
+    HispTotal = HISPANIC + NotHispanic,
+    Hisp_pct = HISPANIC / HispTotal,
+    NotHisp_pct = NotHispanic / HispTotal,
+    Hisp_pct_sq = Hisp_pct^2,
+    NotHisp_pct_sq = NotHisp_pct^2,
+    Hisp_Prob = Hisp_pct_sq + NotHisp_pct_sq
+  ) |> 
+  arrange(Hisp_Prob)
+
+View(md_cities)
+```
+
+## Task 6: Multiply Race and Ethnicity Probabilities
+
+Here we multiply the two probabilities together to get the probability that any two random people have the SAME race and ethnicity.
+
+```{r combined-prob}
+md_cities <- md_cities |>
+  mutate(
+    RaceEth_Prob = Race_Prob * Hisp_Prob
+  )
+```
+
+
+## Task 7: Calculate Diversity Index (3 points)
+
+The final step is to calculate the probability that two people randomly chosen WILL NOT BE OF THE SAME RACE OR ETHNICITY. In other words, the highest index scores will be cities where those two random people will be from different backgrounds. Put simply, more diverse. Which cities are the top 3, and where are they located? Look at the bottom of the list - which city is the least diverse, and where is it?
+
+Langley Park, Wheaton and Adelphi make up the top three (the sole three cities slotted at or above 90), respectively — all of which are geographically inland/urban and located directly in or around the DMV area (and in some cases, centralized within PG County). On the reverse side, Lake Shore is the least diverse (with a diversity index score of 15.53423 and 18,025 "White" individuals) — represented by a more coastal location outside larger city/urban areas and skewed along the Chesapeake Bay, a near polar opposite from the inland Maryland location of the three most diverse cities.
+
+```{r diversity-index}
+md_cities <- md_cities |>
+  mutate(
+    Diversity_Index = (1 - RaceEth_Prob) * 100
+  ) |> 
+  arrange(desc(Diversity_Index))
+
+View(md_cities)
+```
+
+### Pitch a story (8 points)
+
+Given the data that you've produced here, write a headline and lede of the most interesting story from this exercise, and add below that details on how you would report it out: who you'd talk to and the questions you'd ask. When you describe the Diversity Index values, do so in a similar way to how USA Today did; the raw values themselves won't mean much to readers.
+
+Headline: "Densely Populated Cities In and Around DMV Lead Maryland in Diversity" or "Inland Cities Represent Top Maryland Diversity Rates"
+Lede: Langley Park, Wheaton and Adelphi represent the highest Maryland diversity index scores, per USA Today's 2020 Census race and ethnicity data. Top cities, including the above three, indicate an increasingly strong spread of diversity both in and around inland Maryland — and densely populated around the DMV and Washington, D.C. areas.
+
+I'd report it out by investigating and reaching out to talk to community leaders/residents of both the highest and least diverse cities listed (to speak on personal experiences living there in specific), as well as census experts and historians from nearby Maryland universities like UMD. Some questions that I would ask include how city and neighborhood diversity is reflected in everyday life, what specific social and economic factors have influenced the makeup of these cities, what it says/marks about Maryland's future statistics and diversity levels within these cities, as well as how each city's diversity has changed at all in the decade prior to these findings.
