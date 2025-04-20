@@ -1,0 +1,54 @@
+---
+title: "The Impact of Rest on NBA Team Performance"
+NAME: "BEN GEFFNER"
+---
+
+## Exploring the effect of rest days on NBA team performances and the overall impact of in-season time off in between games.
+
+Initial Hypothesis: 
+## I believe that there is a noticeable connection/correlation between rest days and team performances, and that these two factors often go hand in hand in helping to paint the overall outcomes of specific games. Overall, NBA teams playe better and win more with increased rest time before games (at least two days off) — as opposed to back-to-back games or games with just one day's rest.
+
+```{r load-data 1 - 2024-25 With Rest Advantage}
+current_with_rest_ad <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQMoS7M3DyC3zMLcPNIKftbe4PGtgpYH6GnjSnP2Z_pq4BdGkLC_bCbYrxlVF7wKTfAuAh-Zg_N_4Ry/pub?output=csv")
+
+# Preview structure
+View(current_with_rest_ad)
+```
+
+
+```{r data-2 - 2024-25 With Rest Disadvantage}
+current_with_rest_dis <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vS0bzQtZKkNbFDJm8UfbYv7lrDfkl1LMrC--mLiPX4XJa2OOWFWJp5VzIgcB6ohIvZ0b2uwNgtpB-AA/pub?output=csv")
+
+# Preview structure
+View(current_with_rest_dis)
+```
+
+
+```{r data-3 - 2024-25 Team Win Percentage by Rest Splits}
+current_win_by_split <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRhvy8mewisID7_XudWPpibJKdJ25NodqeIew6uUTc8fFa75zeDZix39kzIhLRzZ5jSnL7ocQaWxA17/pub?output=csv")
+
+# Preview structure
+View(current_win_by_split)
+```
+## While the latter 2 datasets highlight NBA team ineraction with rest days over a long period of time, the main focus of the first three is to isolate numbers based strictly from the 2024-25 season, as it provides the most up to date and current findings relative to my examination. I believe these initial three findings support my hypothesis that NBA teams playe better and win more with increased rest time before games — 21 of 30 NBA teams have winning records with a rest advantage, as illustrated in dataset 1, and more than half of all teams are over .500 in games following 2 days rest (time off) leading up to it, as seen in dataset 3. I believe column/dataset 3, specifically rest splits, will be most important for my analysis, as it allows me to compare specific team results (fluctuated and weighted by other factors, of course, like team overall win rate and strength) while isolating different rest split classes, moving from no rest to 2-3 days rest. 
+
+One question I still have on this is how significant is overall rest versus/compared to just overall team quality, and how road versus home game stretches impact rest results? I might be missing specific other variables that are much tougher to account for, such as travel distance during road rest time, altitude, back-to-backs leading into rest days, etc.
+
+```{r data-4 - Team Win Percentage With Rest Advantage Over Time}
+team_over_time <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vSiVEJFX54kzR_PGFXM8ewhYyru-cAZ180ilNIxDBZNr9e6SU6L6wzzG22J74qDv-wAQMuMdhWtkGV9/pub?output=csv")
+
+# Preview structure
+View(team_over_time)
+```
+
+
+```{r data-5 - Rest Advantage Comparison By Time Period}
+total_by_time_period <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRK56dBfbzYVb8vYiONb9Sf4H1f4jajM393iHDzw_SXNhgGvXyA_VbU4-bmmlzgU6sWsBe13t49-cnf/pub?output=csv")
+
+# Preview structure
+View(total_by_time_period)
+```
+
+## These last two datasets help paint the picture and positive impact of rest days on NBA team performance on a much more widespread, broader angle over a large period of time. This NBA rest history data, tracked back to 2003, will definitely be helpful in relating and confirming my beliefs/hypothesis beyond just the 2024-25 season.
+
+Some questions that these last two datasets might help solve include how closely long-term NBA post-rest game performance trends correlates with the current 2024-25 season trends, as well as how these historical numbers can assist in prediciting future patterns and rest impacts.
