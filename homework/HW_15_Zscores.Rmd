@@ -162,7 +162,7 @@ unusual_days |>
 ### Task 3 (3 points)
 Choose one of the top 10 unusual days and research what might have happened on that date. Look for weather events, holidays, major incidents, or other factors that could explain the unusual number of accidents. Briefly describe your findings and how you would incorporate this context into a story.
 
-ANSWER HERE
+Isolating October 29, 2021 in specific — which sports both the highest individual day of week total and z-score — and looking through past weather reports, I found that weather to be a factor that could explain the unusual number of accidents present. In addition to rain and 20+ mph wind gusts, high fog was also present — which reduces visibility, and could have certainly been a crucial factor in accounting for a plethora of higher-rate accidents than a normal-conditioned, clear visibility day. I could incorporate this context into a story by researching most, if not all, of the highly unusual days shown to see if there's a weather pattern correlation — all while making sure to emphasize how inclement weather such as this specific example cannot be overlooked and plays a key role in accounting for high accident rates.
 
 Let's visualize these unusual days:
 
@@ -290,7 +290,7 @@ unusual_monthly |>
 ### Task 5 (2 points)
 Based on the monthly pattern analysis, which months have the highest and lowest average accidents? Develop a hypothesis about why these seasonal patterns exist.
 
-Based on the monthly pattern analysis, October, December, November, May and September, respectively, have the highest average accidents, while January, March and February, respectively, have the lowest average accidents. A hypothesis about why these seasonal patterns related to average numbers of Prince George's County accidents exist may be due to the fact that higher accident-reported months
+Based on the monthly pattern analysis, October, December, November, May and September, respectively, have the highest average accidents, while January, March and February, respectively, have the lowest average accidents. A hypothesis about why these seasonal patterns related to average numbers of Prince George's County accidents exist may be due to the fact that higher accident-reported months coincide with increased road activity, and in turn, more accidents as a result. Specific seasonal trends, specifically in top accident months such as October, November and December, can be seen as a result of a plethora of factors including shorter average hours of daylight, unpredictable weather, as well as potential holiday travel growth — all of which could bring about a higher likelihood for potential accidents to occur. On the other hand, the lowest-reported accident months generally occur further into winter (past the start of a new calendar year), thus correlating with increasingly harsh and dangerous weather — that, because of time of year in specific, may result in individuals exercising greater caution when driving and more individuals indoors, less driving out on the roads.
 
 ## Identifying Extreme Outliers
 
@@ -315,9 +315,14 @@ if(nrow(extreme_outliers) > 0) {
 ### Task 6 (2 points)
 For the extreme outliers identified (z-scores beyond ±3), what do they have in common?
 
-ANSWER HERE
+Virtually the entirety of extreme z-scores identified (beyond ±3) occured during the weekend (Friday, Saturday and Sunday), with the sole exception of Monday, November 29, 2021. This commonality between accident outliers occuring during weekend days connects to a broader trend seen throughout the dataset — that weekend represents increased as high-accident pattern days due to findings that suggest more individuals are out of work and traveling/on roads throughout the entirety of the day (not just in specialized morning and afternoon patterns seen during the week), especially late at night with a higher potential for individuals to be under the influence, which also in turn could result in accident spikes. Furthermore, one of the two negative z-scores below zero occurred on a Monday, correlating and further supporting this trend that early midweek days are more likely to deliver less accidents, directly opposed to weekend rates.
 
 ## Your Best Story Pitch
 
 ### Task 7 (5 points)
 Based on all the analyses performed, craft your best story pitch, including a headline and lede. Be sure to include what kinds of sources/people you'd talk to for the story.
+
+Headline: "Weekend Days Represent Highest Accident Trends Within Prince George's County" 
+
+Lede: Daily accident data from Prince George's County reveals that extreme outliers of Friday, Saturday and Sunday mark the days with the highest average accident rate — with more than a five-accident gap separating Friday's top total of 27.96 from 22.91seen on Wednesday, the lowest reported accident day throughout the week. This, in turn, correlates to the belief that the county's highest accident trends are most likely to occur during the weekend.
+
