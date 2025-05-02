@@ -1,0 +1,85 @@
+---
+title: "Identifying Schools with Biggest Differences in Math Test Scores, Part 2"
+author: "BEN GEFFNER"
+---
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+options(scipen = 999)
+```
+
+### Introduction
+
+We'll do what we did in class, but with a twist: instead of Montgomery County, Pa., you'll be working with data from Montgomery County, Md. Same basic idea, though: linear regression looking at free and reduced-price meals and math test scores.
+
+Just as in the exercise, you will create a scatterplot to visualize the relationship between the FARMS (Free and Reduced-price Meal System) percentage and the percentage of students who met or exceeded math expectations. You'll then use linear regression to identify the schools that show the biggest differences between their actual and expected math test scores and evaluate the results of your model.
+
+### Loading the Data
+
+First, let's load the data into a data frame using the read_csv() function from the tidyverse library.
+
+```{r}
+schools <- read_csv("https://raw.githubusercontent.com/dwillis/jour405_files/refs/heads/main/montgomery_md.csv")
+```
+### Task: Create a Scatterplot and Describe the Results (5 points)
+
+First, let's create a scatterplot to visualize the relationship between the FARMS percentage and the percentage of students who met or exceeded math expectations. We'll use ggplot2 to create the plot and add a linear regression line.
+
+```{r}
+schools |>
+  ggplot(aes(x = `FARMS Pct`, y = `% Met or Exceeded Math Expectations`)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(x = "FARMS Percentage", y = "% Met or Exceeded Math Expectations", title = "Scatterplot of Math Expectations vs FARMS Percentage")
+```
+Based on what you see here, what's the relationship between FARMS percentage and math test scores? Compare this scatterplot to the one you made in the class activity.
+
+Based on the above scatterplot, I would categorize the relationship between FARMS percentage and math test scores as negative — trending downwards over time, relating to a broader trend, that increased/higher FARMS percentage resulted in gradually lower/decreased percentage of students who met or exceeded math expectations. This negative-sloping trend within Montgomery County, Md. differs nearly entirely from the scatterplot made in this week's Montgomery County, Pa. class activity — in which the Pennsylvania statistics resulted in a gradually positive red linear regression line. Additionally, though still on an upwards linear regression line/trend, the class activity data points within the scatterplot (most of which came with a sub-50 FARMS percentage) were spread quite wide across it, showing mixed high and low outliers. This Maryland dataset shows the opposite, as ata points are split across the x-axis FARMS percentage area, with a higher confidence/consistency level illustrated by specific points falling closer to the red line with less outliers across the chart as a whole — and the overall line is trending down, not up.
+
+
+### Task: Linear Regression Model (7 points)
+
+Next, you'll perform a linear regression analysis using the lm() function. We'll set the percentage of students who met or exceeded math expectations as the dependent variable, and the FARMS percentage as the independent variable. In other words, if we know the FARMS percentage for a school, how reliably can we predict its math score?
+
+```{r}
+model <- lm(`% Met or Exceeded Math Expectations` ~ `FARMS Pct`, data = schools)
+
+summary(model)
+```
+
+Provide the model's output for the three statistics mentioned in the class activity.
+
+The model reveals the intercept is 68.04878 while the FARMS coefficient is -0.59511 — further relating back to the negative trend seen in the scatterplot, and its contrast from a positive FARMS coefficient seen within the in-class Pa. data. The second of three statistics mentioned in the class activity shows the p-value as < 0.00000000000000022 and the adjusted R-squared as 0.6734.
+
+Based on what you've learned so far, what does it tell us about the nature of the relationship between FARMS percentage and math scores? Is this model worth exploring further? Why or why not?
+
+Based on what I've learned so far, it tells me that the nature of the relationship between FARMS percentage and math scores, based on minimum and maximum residual values, is less varied between actual and expected scores — though there's less variation between the two factors, the mixture of scores for Montgomery County, Md. is trending downwards. Yes, I do believe this model should be explored further, as its worth uncovering the exat reasons for the differences between MD and PA's respective linear regression difference — to explore why a clear negative relationship between the FARMS percentage and the percentage of students who met or exceeded math expectations marked by the linear regression line is visible in this case..
+
+### Task: Identifying Schools with Biggest Residuals (3 points)
+
+Let's calculate and examine the residuals next. 
+
+```{r}
+schools$predicted <- predict(model)
+
+# Calculate the residuals
+schools <- schools |> 
+  mutate(residual = `% Met or Exceeded Math Expectations` - predicted)
+
+# Sort the data frame by the absolute value of the residuals in descending order
+schools <- schools |>
+  mutate(abs_residual = abs(residual)) |>
+  arrange(desc(abs_residual))
+
+```
+
+Look at the absolute values of the residuals; what are the largest differences between the predicted result and the actual math scores? Pick two schools with the largest residuals. Find the zip codes where they are located and using the CensusReporter.org website, describe the most interesting demographic data from each zip code.
+
+Looking at the absolute values of the residuals, two high-residual schools with the largest differences between the predicted result and the actual math scores include Wayside Elementary and Travilah Elementary — both sporting the two largest residuals of 56.45860902 and 54.09963870, respectively, and a combined difference of around 30 between lower predicted scores and higher residuals. I believe the most interesting demographic data from Wayside Elementary — located within Potomac, MD's 20854 zip code — can be connected back to its economic/financial data, in that the per capita income for the area is $110,500 (more than 1.5 times the amount in the Washington-Arlington-Alexandria, DC-VA-MD-WV Metro Area and over double the amount in Maryland overall) while the median household income is 250,001 (more than double the amount in Maryland). These increasingly high financial statistics may result in the specific zip code (and schools as a whole within it, including Wayside Elementary) getting a more improved access to education as an effect of larger funds, thus making sense as to why its exceeded expectations and boasts the highest overall residual value. Furthermore, the most interesting demographic data from Travilah Elementary — located within Maryland's 20878 zip code — can be connected back to its educational attainment levels, that 96.2% of individuals reach high school grad levels or higher (above the overall Maryland rate) and 70.1% attain a Bachelor's degree or higher (more than 1.5 times the rate in Maryland), thus relating back to the priority that it places on education and an overall educational trend reflected across the zip code, further making sense as to why its residual is so large.
+
+## Task: Evaluate the model (5 points)
+
+Describe what conclusions you'd draw from this model's results and how it would influence a story pitch about the school board member and math scores.
+
+Some conclusions I'd draw from this model's results include a strong negative correlation revealed in the regression analysis, showcasing an overall trend in how a substantial portion of expected math scores are varied based on actual percentage findings. While the model shows less overall outliers than the in-class example, the overarching negative trend can still be traced back to a data-driven angle in that economic disadvantage and school location within the county can often be a decisive indicator relative to math test incomes — results from the model may not take into account outside factors that impact residual values. This MD dataset, opposite to the PA example, greater supports the school board member's pitch that elementary schools with fewer students on free and reduced price meals do better on standardized math tests — with a generally high values (well above 60% of students that met or exceeded expectations) correlating to lower FARMS percentage (with the greatest differences seen below and above the 25% marker) before an eventual strong negative slope as the percentage of students on free and reduced price meals increased along the scatterplot. Establishing a more factual baseline (as opposed to a more widespread, outlier-heavy faulty model seen through the in-class data) is crucial in generating a more confident/strong result here — helping to further confirm a story pitch rooted around how elementary schools with fewer students on free and reduced price meals may do better on standardized math tests, a trend seen between economic disadvantage and lower math performance rates backed by data found within Montgomery County, Md. schools.
