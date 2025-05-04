@@ -3,7 +3,9 @@ title: "The Impact of Rest on NBA Team Performance"
 NAME: "BEN GEFFNER"
 ---
 
-## Perform ANOVA Test for '2024-25 With Rest Advantage' dataset (UPDATED as suggested without % symbols on 5/3)
+Along with a boxplot, I generated ANOVA, linear regression and chi-square tests (molding formulas based on in-class work with each) to study NBA Team Win Percentage by Rest Splits in the 2024-25 season, with the goal in using this specific dataset being to further confirm if NBA team win percentage relative to various types of rest advantages (in this case, variables included 'no rest,' 'one day's rest' and '2-3 day's rest') are significantly different from my personal expected frequencies noted in the original hypothesis. I initially was having trouble forming the tests (and receiving error messages), but found success after reformatting the data in my original Google Sheet to make it as 'long' a format as possible (more rows than columns) as suggested in feedback from last week's assignment. Through the restructured data, I was able to conclude that, since my chi-square statistic (137.2) is greater than the critical value (112.022), I would reject the null hypothesis and conclude that the observed frequencies are significantly different. There's statistical evidence to show that my distribution of win % data varies and is influenced by more or less rest time before games (that the two variables are interconnected, and not independent of one another) — while my boxplot also separated by rest split category accurately backed up and confirmed my original belief as well, that an increased rest advantage between games generally results in a higher, elevated mean percentage for teams overall (of course, with the potential to be heightened or reduced by outside factors such as strength of schedule, weighted success, etc.).
+
+## Perform ANOVA Test for '2024-25 Team Win Percentage by Rest Splits' dataset (UPDATED as suggested without % symbols on 5/3)
 
 ```{r anova-test}
 # Run one-way ANOVA
@@ -33,6 +35,12 @@ summary(model)
 ```{r}
 chisq_result <- chisq.test(current_win_by_split$rest_time, current_win_by_split$win_pct)
 chisq_result
+```
+```{r}
+alpha <- 0.05
+df <- length(current_win_by_split$team) - 1
+critical_value <- qchisq(alpha, df, lower.tail = FALSE)
+critical_value
 ```
 
 Given various analyses experimented with in class, I believe tests relating to linear regression, ANOVA and chi-square would prove beneficial and be applicable for use when studying the accuracy of my hypothesis. First, I believe linear regression could be utilized well when connecting specific statistics represented in each of my datasets back to the overall relationship between the number of rest days versus overall season-long win percentage for each given team — with team execution/performance as the potential dependent variable and rest days/time off as the respective independent variable. Furthermore, an ANOVA test could work as well when studying the grouping of rest day categories (seen in the 'Rest Day Splits' dataset) and how more or less time/days off prior to games impacts team performance — this test could to see if mean/average team win percentage and overall margin of victory differs across these various categories/groups, helping reveal the exact significance of these differences while differentiating between potential real patterns with statistically significant results or random variation. Finally, a chi-square test could work in similar fashion — helping determine whether the frequency of a specific team's number of both losses and wins differs based on the amount of rest days preceding games, eventually testing how these two factors are either independent or interconnected, with the answer having the potential to confirm my original hypothesis in a more straightforward manner. This, in turn, could be very telling as to whether actual observed frequencies of NBA team win percentage relative to rest advantages are significantly different from my personal expected frequencies noted in the original hypothesis. A few questions I still have include whether it would be beneficial to run all of these above mentioned tests or just focus on a select few/one when comparing results to my original hypothesis, and if the results of these tests have the potential to be interconnected or if each specific finding should be isolated relative to each — as well as whether I'm on the right track in relation to accurately labeling specific variables that I plan to use for these tests.
